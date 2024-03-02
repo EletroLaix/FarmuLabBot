@@ -47,6 +47,7 @@ Bot.start(async (Context) => {
 		await Context.sendMessage(`Verifico di essere in un super gruppo... ${(Context.chat.type == 'supergroup') ? '✅' : '❌'}`)
 		let Member = await Context.telegram.getChatMember(Context.chat.id, Context.botInfo.id)
 		await Context.sendMessage(`Verifico di essere amministratore... ${(Member.status === 'administrator' || Member.status === 'creator') ? '✅' : '❌'}`)
+		Database.AddNewGroup(Context.chat.title, Context.chat.id)
 	}
 	else {
 		Context.sendMessage('Il mio compito è gestire un gruppo non posso essere d\'aiuto qui.')
@@ -84,7 +85,7 @@ Bot.command('info', async (Context) => {
 		Object.entries(Groups).forEach((([GroupName, GroupValue]) => {
 			if (GroupValue.Users)
 				Object.entries(GroupValue.Users).forEach((([UserName, UserValue]) => {
-					if ( UserName == Context.from.username ) {
+					if (UserName == Context.from.username) {
 						Context.sendMessage(`ℹ All'interno del gruppo **${GroupName}** , hai inviato un totale di ${UserValue.EventCounters.TotalLink} link`)
 					}
 				}))

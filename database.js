@@ -131,6 +131,10 @@ class Database {
 		return Result
 	}
 
+	async AddNewGroup(NewChatTitle, NewChatID) {
+		await set(ref(DB, `SuperGroups/${NewChatTitle}/ChatID`), NewChatID )
+	}
+
 	async GetAllGroups() {
 		let AllGroups
 		await get(ref(DB, `SuperGroups`)).then((Data) => { AllGroups = Data.val() })
