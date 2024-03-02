@@ -86,7 +86,7 @@ Bot.command('info', async (Context) => {
 			if (GroupValue.Users)
 				Object.entries(GroupValue.Users).forEach((([UserName, UserValue]) => {
 					if (UserName == Context.from.username) {
-						Context.sendMessage(`ℹ All'interno del gruppo **${GroupName}** , hai inviato un totale di ${UserValue.EventCounters.TotalLink} link`)
+						Context.sendMessage(`ℹ All'interno del gruppo ${GroupName}, hai inviato un totale di ${UserValue.EventCounters.TotalLink} link`)
 					}
 				}))
 		}))
