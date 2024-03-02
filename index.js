@@ -73,9 +73,12 @@ Bot.on(['text', 'sticker', 'animation', 'audio', 'document', 'photo', 'video', '
 				Database.ImcreaseUnauthorizedMessage(Context.chat.title, Context.from.username)
 			}
 			else if (Context.message.message_thread_id != User.Topic.ID) {
-				Context.deleteMessage(Context.message.message_id)
-				SelfDestructingMessage(Context, '⚠ Non è il tuo topic')
-				Database.ImcreaseUnauthorizedMessage(Context.chat.title, Context.from.username)
+				let Memeber = await Context.getChatMember(Context.from.id)
+				if ((Memeber.status != 'creator') && (Memeber.status != 'administrator')) {
+					Context.deleteMessage(Context.message.message_id)
+					SelfDestructingMessage(Context, '⚠ Non è il tuo topic')
+					Database.ImcreaseUnauthorizedMessage(Context.chat.title, Context.from.username)
+				}
 			}
 			else if (!Context.message.text.includes('https://makerworld.com')) {
 				Context.deleteMessage(Context.message.message_id)
