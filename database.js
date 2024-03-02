@@ -16,7 +16,7 @@ const DB = getDatabase(
 			"auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
 			"client_x509_cert_url": process.env.FIREBASE_CLIENT_X509_CERT_URL,
 			"universe_domain": "googleapis.com"
-		  }),
+		}),
 		databaseURL: process.env.FIREBASE_DATABASE_URL
 	})
 )
@@ -50,11 +50,13 @@ class Database {
 		}
 		await set(ref(DB, `SuperGroups/${ChatTitle}/Users/${Username}`), User)
 	}
+
 	async UpdateTopic(ChatTitle, Username, TopicName, TopicID) {
 		console.log(`Update Topic: @${Username}`)
 
 		await set(ref(DB, `SuperGroups/${ChatTitle}/Users/${Username}/Topic`), { Name: TopicName, ID: TopicID })
 	}
+
 	async DeleteUser(ChatTitle, Username) {
 		console.log(`Left member: @${Username}`)
 
@@ -127,6 +129,12 @@ class Database {
 		console.log(`Total link in this sprint @${Username}: ${Links.length}`)
 
 		return Result
+	}
+
+	async GetAllGroups() {
+		let AllGroups
+		await get(ref(DB, `SuperGroups`)).then((Data) => { AllGroups = Data.val() })
+		return AllGroups
 	}
 }
 module.exports = new Database()

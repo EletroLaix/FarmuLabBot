@@ -31,6 +31,13 @@ async function ReturnUser(ChatTitle, ChatID, Username) {
 	return await Database.GetUser(ChatTitle, Username)
 }
 
+Bot.telegram.setMyCommands([
+	{
+		command: 'info',
+		description: 'Information',
+	}
+])
+
 Bot.start(async (Context) => {
 
 	await Context.sendMessage('Salve, sono FormuLab Bot 🤖')
@@ -47,16 +54,41 @@ Bot.start(async (Context) => {
 })
 
 Bot.command('test', async (Context) => {
-	if (Context.chat.is_forum && Context.message.is_topic_message) {
+	if (Context.chat.type != 'private') {
 		let User = await Database.GetUser(Context.chat.title, Context.from.username)
 		if (User != null) {
-			Context.deleteMessage(Context.message.message_id)
-			SelfDestructingMessage(Context, '⚠ Questo messaggo non è autorizzato')
 			Database.ImcreaseUnauthorizedMessage(Context.chat.title, Context.from.username)
 		}
+		Context.deleteMessage(Context.message.message_id)
+		SelfDestructingMessage(Context, '⚠ Questo messaggo non è autorizzato')
 	}
 	else {
 		Context.sendMessage('Test !!! 💣')
+	}
+})
+
+Bot.command('info', async (Context) => {
+	if (Context.chat.type != 'private') {
+		let User = await Database.GetUser(Context.chat.title, Context.from.username)
+		if (User != null) {
+			Database.ImcreaseUnauthorizedMessage(Context.chat.title, Context.from.username)
+		}
+		Context.deleteMessage(Context.message.message_id)
+		SelfDestructingMessage(Context, '⚠ Questo messaggo non è autorizzato')
+	}
+	else {
+		Context.sendMessage(`ℹ Ciao @${Context.from.username}, ecco le informazioni che ho su di te:`)
+
+		let Groups = await Database.GetAllGroups()
+
+		Object.entries(Groups).forEach((([GroupName, GroupValue]) => {
+			if (GroupValue.Users)
+				Object.entries(GroupValue.Users).forEach((([UserName, UserValue]) => {
+					if ( UserName == Context.from.username ) {
+						Context.sendMessage(`ℹ All'interno del gruppo **${GroupName}** , hai inviato un totale di ${UserValue.EventCounters.TotalLink} link`)
+					}
+				}))
+		}))
 	}
 })
 
